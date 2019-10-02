@@ -356,7 +356,6 @@
 	23、Schema约束
 	24、JDBC数据库连接
 	25、JVM虚拟机
-	26、JMM内存模型
 二、Html
 	1、标签
 	2、属性
@@ -438,10 +437,43 @@
 十三、MyBatis、MyBatisPlus、TkMapper、Hibernate
 
 
-十四、Redisson数据网格
+十四、并发编程
+	1、冯诺依曼计算机模型
+	2、现代计算机硬件基本结构
+	3、CPU内部结构
+	4、CPU多核缓存架构
+	5、缓存一致性协议(MESI)
+	6、用户级线程(ULT)与内核级线程(KLT)
+	7、Java线程的生命周期
+	8、JMM内存模型
+		[1]、概念：JMM与JVM内存区域的划分是不同的概念层次，更恰当说JMM描述的是一组规则，
+				   通过这组规则控制程序中各个变量在共享数据区域和私有数据区域的访问方式，
+				   以及屏蔽不同操作系统之间的差异，JMM是围绕原子性，有序性、可见性展开。
+		[2]、Java内存模型与硬件内存架构的关系
+		[3]、Java内存模型内存交互操作
+			a、lock(锁定)
+				作用于主内存的变量，把一个变量标记为一条线程独占状态
+			b、unlock(解锁)
+				作用于主内存的变量，把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定
+			c、read(读取)
+				作用于主内存的变量，把一个变量值从主内存传输到线程的工作内存中，以便随后的load动作使用
+			d、load(载入)
+				作用于工作内存的变量，它把read操作从主内存中得到的变量值放入工作内存的变量副本中
+			e、use(使用)
+				作用于工作内存的变量，把工作内存中的一个变量值传递给执行引擎
+			f、assign(赋值)
+				作用于工作内存的变量，它把一个从执行引擎接收到的值赋给工作内存的变量
+			g、store(存储)
+				作用于工作内存的变量，把工作内存中的一个变量的值传送到主内存中，以便随后的write的操作
+			h、write(写入)
+				作用于工作内存的变量，它把store操作从工作内存中的一个变量的值传送到主内存的变量中
+		[4]、volatile原理与内存语义
+
+
+十五、Redisson数据网格
 	参考资料：https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95
 
-十五、Nginx
+十六、Nginx
 	1、Linux下安装(基于源码包的方式安装)
 		[1]解压安装包
 			命令：tar -zxvf nginx-1.14.0.tar.gz
@@ -495,21 +527,21 @@
 		
 		[7]日志格式
 	
-十六、BootStrap
+十七、BootStrap
 
-十七、EasyUI
+十八、EasyUI
 
-十八、LayUI
+十九、LayUI
 
-十九、NodeJS
+二十、NodeJS
 
-二十、Vue
+二十一、Vue
 
-二十一、React
+二十二、React
 
-二十二、AngularJS
+二十三、AngularJS
 
-二十三、数据结构与算法
+二十四、数据结构与算法
 	1、数据结构包含的内容
 		(1)逻辑结构
 		(2)存储结构
@@ -540,61 +572,65 @@
 				最快的增长项为n^2，所以T(n) = O(n^2)
 	5、空间复杂度
 
-二十四、系统调优
+二十五、系统调优
 	1、Mysql调优
 	2、Tomcat调优
 	3、Nginx调优
 	4、JVM调优
 	
-二十五、JXL、POI、JACOB办公文档处理
+二十六、JXL、POI、JACOB办公文档处理
 
-二十六、Activti流程控制引擎
+二十七、Activti流程控制引擎
 
-二十七、ELK(Elasticsearch、Logstash、Kibana)数据分析框架
+二十八、ELK(Elasticsearch、Logstash、Kibana)数据分析框架
 
-二十八、ShardingSphere分库分表利器
+二十九、ShardingSphere分库分表利器
 
-二十九、SpringBoot
+三十、SpringBoot
 
-三十、Netty
+三十一、Netty
 
-三十一、SPI、Dubbo
+三十二、SPI、Dubbo
 
-三十二、Zookeeper
+三十三、Zookeeper
 
-三十三、JMS、ActivityMQ、Kafka、RocketMQ、RabbitMQ
+三十四、JMS、ActivityMQ、Kafka、RocketMQ、RabbitMQ
 
-三十四、SpringCloud
+三十五、SpringCloud
 
-三十五、Eureka
+三十六、Eureka
 
-三十六、Ribbon
+三十七、Ribbon
 
-三十七、Feign
+三十八、Feign
 
-三十八、Hystrix
+三十九、Hystrix
 
-三十九、Zuul
+四十、Zuul
 
-四十、Docker
+四十一、Docker
 
-四十一、Kubernetes
+四十二、Kubernetes
 
-四十二、人工智能
-	(1)Python
-	(2)神经网络
-	(3)脑类计算
-	(4)深度学习
+四十三、人工智能
+	1、Python
+	2、神经网络
+	3、脑类计算
+	4、深度学习
 	
-四十三、区块链
-	(1)共识机制
-	(2)工作量证明原理
-	(3)挖矿算法
-	(4)密码学
+四十四、区块链
+	1、共识机制
+	2、工作量证明原理
+	3、挖矿算法
+	4、密码学
 	
-四十四、大数据
-	(1)Hadoop
-	(2)Spark
-	(3)数据挖掘
-	
-四十五、物联网技术
+四十五、大数据
+	1、Hadoop
+	2、Spark
+	3、数据挖掘
+	4、MapReduce
+四十六、物联网技术
+	1、RFID射频识别技术
+	2、传感网
+	3、M2M系统框架
+	4、云计算
