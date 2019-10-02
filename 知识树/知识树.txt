@@ -1,0 +1,600 @@
+一、Java
+	1、数据类型
+		(1)基本数据类型（1个字节占8位二进制数）
+			byte	1个字节 	-128(-2^7) ~ 127(2^7-1) 
+			short	2个字节 	-32768(-2^15) ~ 32767(2^15-1)
+			int		4个字节 	-2,147,483,648(-2^31) ~ 2,147,483,647(2^31-1)
+			long	8个字节 	-9,223,372,036,854,775,808(-2^63) ~ 9,223,372,036,854,775,807(-2^63-1)
+			float	4个字节
+			double	8个字节
+			char	2个字节
+			boolean 1个字节 	true、false
+		(2)引用类型
+			对象、数组都是引用数据类型，所有的引用类型默认值都为null，在栈中存放堆或常量池中的地址			
+			Byte
+			Short
+			Integer
+			Long
+			Float
+			Double
+			Char
+			Boolean
+			String
+			.
+			.
+			.
+	2、运算符
+		(1)算数运算符
+			+ - * / %
+		(2)赋值运算符
+			= += -= *= /= %=
+		(3)比较运算符
+			== != >= <= > <  
+		(4)逻辑运算符
+			& &&(短路与) | ||(短路或) ! ^
+		(5)位运算符
+			& | ^ <<(左移) >>(右移) ~(取反)
+		(6)三元运算符
+			条件表达式?表达式1:表达式2
+	3、流程控制
+		if、else if、else、for、while、do while
+	4、数组
+		(1)静态数组
+			int [] arr = new int[10];
+		(2)动态数组
+			int [] arr = new int[]{1,2,3};
+			int [] arr = {1,2,3};
+	5、类、属性、方法
+		(1)类是一组具有相同特征和行为的事物的抽象概念
+			[1]基本构成：
+				属性、方法、构造方法、package包、import导包、内部类
+		(2)属性是类的成员，是该类型事物的特征描述
+			[1]全局属性(全局变量)
+			[2]局部属性(局部变量)
+			[3]静态属性(静态变量、类变量)
+		(3)方法是类的成员，是该类型事物的行为描述
+	6、修饰符
+		(1)权限修饰符
+			[1]public		公共的
+				a、public可以用来修饰接口、类、属性、构造方法、成员方法，不能修饰内部类，同一个java文件只能有一个public修饰的类
+			[2]protected	受保护的
+				a、protected 可以修饰属性，构造方法，成员方法，不能修饰类（内部类除外）。
+				b、在子类中，子类实例可以访问其从基类继承而来的 protected 方法，而不能访问基类实例的protected方法
+			[3]default		默认
+				a、default可以修饰属性、方法
+			[4]privite		私有
+				a、private可以修饰属性、构造方法、方法、成员内部类，不可以修饰代码块里定义的局部变量和内部类
+			[5]访问控制
+				修饰符		当前类		同一包内		子类（同一包内）		子类（不同包内）		其他包
+				public		Y			Y				Y						Y						Y
+				protected 	Y			Y				Y						Y/N						N
+				default 	Y			Y				Y						N						N
+				private 	Y			N				N						N						N
+		(3)三大修饰符
+			[1]static		静态
+				a、static可以用来修饰属性、方法、成员内部类，
+				b、被static修饰的属性，可以通过接口或类名直接调用，在类装载时就会初始化，无需调用时才初始化
+				c、被static修饰的方法，可以通过类型直接调用
+			[2]final		终态
+			[3]abstract		抽象
+	7、面向对象
+		(1)继承
+			[1]基本要素
+				a、两个类之间存在父子关系
+				b、子类可以使用不属于它的成员（该成员来自父类）
+			[2]作用
+				a、避免类泛滥
+				b、避免代码重复
+			[3]缺点
+				a、耦合度越高会导致代码之间的联系越紧密，独立性差
+		(2)封装
+			[1]概念：封装（英语：Encapsulation）是指一种将抽象性函式接口的实现细节部份包装、隐藏起来的方法。
+			[2]优点
+				a、减少耦合
+				b、内部结构可以随意修改
+				c、对成员变量进行更精确的控制
+				d、隐藏信息，实现细节
+		(3)多态
+			[1]静态多态
+			[2]动态多态
+		(4)抽象类
+		
+		(5)接口
+	8、集合框架
+		(1)Collection
+		(2)List
+			[1]ArrayList
+			[2]LinkedList
+			[3]Vector
+		(3)Set
+			[1]HashSet
+			[2]LinkedHashSet
+			[3]TreeSet
+		(4)Queue
+			[1]ArrayBlockingQueue
+			[2]DelayQueue
+			[3]LinkedBlockingQueue
+			[4]LinkedList
+			[5]PriorityBlockingQueue
+			[6]PriorityQueue
+			[7]SynchronousQueue
+			[8]Deque
+			[9]ArrayDeque
+			[10]LinkedBlockingDeque
+		(5)Map
+			[1]HashMap
+			[2]HashTable
+			[3]LinkedHashMap
+			[4]TreeMap
+			[5]Properties
+		(6)Map.Entry
+		
+		(7)Iterable
+		
+		(8)Iterator
+	9、常用实用类
+		(1)包装类
+			[1]Byte
+			[2]Short
+			[3]Integer
+			[4]Long
+			[5]Float
+			[6]Double
+			[7]Char
+			[8]Boolean
+		(2)String
+		
+		(3)BigDecimal
+		
+		(4)BigInteger
+		
+		(5)Date
+			[1]时间类型，表示特定的瞬间，精确到毫秒
+			[2]常用方法(Date date = new Date())
+				a、date.after(otherDate);判断当前的时间是否在指定时间之后
+				b、date.before(otherDate);判断当前的时间是否在指定时间之前
+				c、date.compareTo(otherDate);比较两个时间的顺序
+		(6)Calendar
+		
+		(7)SimpleDateFormat
+		
+		(8)Math
+		
+		(9)StringBuffer
+		
+		(10)StringBuilder
+		
+		(11)StringTokenizer(字符串解析分离)
+		
+		(12)Scanner
+		
+		(13)Comparable
+		
+		(14)Pattern与Match
+		
+		(15)Class
+		
+		(16)Object
+		
+		(17)System
+		
+	10、数据流
+		(1)数据流对应关系
+			[1]输入流<===>输出流
+			[2]字节流<===>字符流
+			[3]节点流<===>处理流
+		(2)输入流
+			[1]字节节点输入流
+				InputStream
+			[2]文件字节节点输入流  
+				FileInputStream
+			[3]缓冲字节处理输入流
+				BufferedInputStream
+			[4]转换字符处理输入流
+				InputStreamReader
+			[5]缓冲字符处理输入流
+				BufferedReader
+			[6]数据字节处理输入流
+				DataInputStream
+			[7]对象字节处理输入流
+				ObjectInputStream
+			[8]文件字符处理输入流
+				FileReader
+		(3)输出流
+			[1]字节节点输出流
+				OutputStream
+			[2]文件字节节点输出流
+				FileOutputStream
+			[3]缓冲字节处理输出流
+				BufferedOutputStream
+			[4]转换字符处理输出流
+				OutputStreamWriter
+			[5]缓冲字符处理输出流
+				BufferedWriter
+			[6]数据字节处理输出流
+				DataOutputStream
+			[7]对象字节处理输出流
+				ObjectOutputStream
+			[8]文件字符处理输出流
+				FileWriter
+		(4)文件操作
+			[1]创建文件
+				a、创建文件夹
+					File file = new File("文件夹目录");
+					file.makeDirs();
+				b、创建文件
+					File file = new File("文件目录");
+					file.createNewFile();
+			[2]删除文件
+				a、删除文件夹
+					①如果是空文件夹
+						File file = new File("文件夹目录");
+						file.delete();
+					②如果是非空文件夹，需要递归删除
+						public static void deleleDir(File file){
+							if(file.exists()){
+								if(file.isFile()){
+									file.delete();
+								}else {
+									List<File> files = file.listFiles();
+									for(File file : files){
+										deleteDir(file);
+									}
+									file.delete();
+								}
+							}							
+						}
+				b、删除文件
+					File file = new File("文件目录");
+					file.delete();
+			[3]修改文件
+				a、修改文件名
+					①思路1：根据新的文件名创建一个文件，拷贝旧的文件内容到新的文件里，再删除旧的文件
+					存在问题：多线程下，会出现旧文件不存在，新文件已存在，或文件被占用的情况
+					②
+				b、修改文件内容
+					①覆盖原来的内容
+						public static void write(File file, String content){
+							if(!file.exists())
+								throw new RuntimeException("文件不存在");
+							if(!file.isDirectory())
+								throw new RuntimeException("该目录为文件夹，不能执行该操作");
+							BufferedWriter bw = null;
+							try {
+								bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+								bw.write(content);
+							} catch (Exception e) {
+								e.printStackTrace();
+							} finally {
+								if(bw != null){
+									try {
+										bw.close();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+					②在原来的内容后面追加，主要区别点在于FileOutputStream构造方法的第二个参数
+						public static void write(File file, String content){
+							if(!file.exists())
+								throw new RuntimeException("文件不存在");
+							if(!file.isDirectory())
+								throw new RuntimeException("该目录为文件夹，不能执行该操作");
+							BufferedWriter bw = null;
+							try {
+								bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true)));
+								bw.write(content);
+							} catch (Exception e) {
+								e.printStackTrace();
+							} finally {
+								if(bw != null){
+									try {
+										bw.close();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+			[4]查询文件
+	11、多线程
+		(1)创建线程
+			[1]Runnable
+				public class NeedRun implements Runnable{
+					@Override
+					public void run(){
+						for(;;){
+							System.out.println("===========");
+							try{
+								Thread.sleep(1000);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				public static void main(String [] args){
+					NeedRun needRun = new NeedRun();
+					Thread thread = new Thread(needRun);
+					thread.start();
+				}
+			[2]Thread
+				public class NeedRun extends Thread{
+					@Override
+					public void run(){
+						for(;;){
+							System.out.println("===========");
+							try{
+								Thread.sleep(1000);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				public static void main(String [] args){
+					NeedRun needRun = new NeedRun();
+					needRun.start();
+				}
+			[3]Callable<T>
+				
+	12、GUI
+	13、网络编程
+	14、属性文件Properties
+	15、泛型
+	16、枚举
+	17、注解
+	18、反射
+	19、正则表达式
+	20、国际化
+	21、Xml解析
+		(1)dom4j
+		(2)jdom
+		(3)sax
+	22、DTD约束
+	23、Schema约束
+	24、JDBC数据库连接
+	25、JVM虚拟机
+	26、JMM内存模型
+二、Html
+	1、标签
+	2、属性
+三、Css
+	1、选择器
+	2、CSS样式
+	3、盒子模型
+	4、定位
+	5、浮动
+	6、对齐
+	7、尺寸
+四、Js
+	1、数据类型
+	2、对象
+		(1)创建对象的方式
+		(2)原型对象链
+	3、函数
+	4、运算符
+	5、流程控制
+	6、事件
+	7、JavaScript 对象
+	8、Browser 对象
+	9、BOM 对象
+	10、DOM 对象
+	11、HTML 对象
+五、JQuery
+	1、选择器
+	2、文档处理
+	3、表单校验
+	4、事件
+	5、效果
+	6、ajax
+	7、工具函数
+六、Mysql数据库
+	1、DDL
+	2、DML
+	3、数据类型
+	4、视图
+	5、函数
+	6、事件
+	7、事务
+	7、触发器
+	8、存储过程
+	9、存储引擎
+	10、索引
+	11、数据备份
+	12、数据恢复
+	13、用户操作与授权	
+七、Redis数据库
+
+八、JavaEE
+	1、Tomcat服务器
+	2、Jetty服务器
+	3、Servlet
+		[1]生命周期
+		[2]九大内置对象
+		[3]四大作用域
+	4、监听器
+	5、过滤器
+	6、拦截器
+	7、JSP
+	8、EL、JSTL
+	9、Thymeleaf
+九、Linux操作系统
+
+十、版本控制工具
+	1、Svn
+	2、Git
+		[1]基本命令：
+			git add;将修改后的内容添加到git缓冲区，此时还没提交
+			git commint;将缓冲区的内容提交到本地的git仓库
+			git pull;拉取远程的仓库内容到本地仓库
+			git push;将本地仓库的内容推送到远程的仓库
+
+十一、Spring
+
+十二、SpringMVC
+	
+十三、MyBatis、MyBatisPlus、TkMapper、Hibernate
+
+
+十四、Redisson数据网格
+	参考资料：https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95
+
+十五、Nginx
+	1、Linux下安装(基于源码包的方式安装)
+		[1]解压安装包
+			命令：tar -zxvf nginx-1.14.0.tar.gz
+		[2]对源码进行二进制编译，生成objs目录，包含要安装的nginx的模块，以及相对应的源码
+			a、命令：./configure
+			b、携带参数（包含安装时的配置信息以及需要安装的模块等），官网：Building nginx from Sources
+		[3]生成(构建)nginx二进制执行文件
+			命令：make
+		[4]安装nginx到指定的目录，默认/usr/local/nginx
+			命令：make install
+	2、添加、更新nginx模块
+		[1]进入到解压目录
+			命令:
+				a、./configure --需要添加或更新的模块
+				b、make 构建nginx二进制执行文件
+				c、make install 拷贝并备份nginx二进制执行文件到安装目录
+	3、常用nginx命令
+		[1]nginx -?
+			描述：查看nginx命令提示
+		[2]nginx -v
+			描述：查看nginx版本
+		[3]nginx -V
+			描述：查看nginx版本，并罗列出所有已经安装了的模块
+		[4]nginx -t
+			描述：检查nginx配置文件是否合法，会提示不合法配置的位置，在修改nginx配置时可以使用
+		[5]nginx -s stop
+			描述：立即停止nginx服务
+		[6]nginx -s quit
+			描述：优雅的停止nginx服务，在服务停止前会陆续关闭没有访问的端口，访问中的，等访问结束后会关闭
+		[7]nginx -s reopen
+			描述：重新打开日志文件，更改日志文件句柄引用，不包含reload功能，不能重新加载配置文件
+			场景：如果nginx日志文件过大，需要重新创建一个日志文件，把之前的重命名，再新建一个日志文件，
+				  由于文件句柄跟随文件，记录日志是根据文件句柄查找文件，所以，新的日志信息还是在原来的日志文件里，
+				  此时，就需要执行该命令，重新引用句柄
+		[8]nginx -s reload
+			描述：重新加载配置文件，当配置文件修改后，如果不想重启，直接用该命令重新加载配置文件即可
+		[9]nginx -c filename
+			描述：指定配置文件启动nginx
+		[10]nginx -g "启动参数"
+			描述：启动时可以传递参数修改默认配置
+			例如：nginx -g "user root;" 修改nginx进程的指定用户
+	4、nginx配置
+		[1]server
+			描述：配置一个站点，包含访问的服务名和端口信息和静态文件目录或代理站点信息等
+		[2]listen
+			描述：配置访问的端口
+		[3]server_name
+			描述：配置服务名，具体为IP或域名
+		[4]
+		
+		
+		[7]日志格式
+	
+十六、BootStrap
+
+十七、EasyUI
+
+十八、LayUI
+
+十九、NodeJS
+
+二十、Vue
+
+二十一、React
+
+二十二、AngularJS
+
+二十三、数据结构与算法
+	1、数据结构包含的内容
+		(1)逻辑结构
+		(2)存储结构
+		(3)数据运算
+	2、分类
+		(1)线性结构
+		(2)非线性结构
+	3、存储方式
+		(1)顺序存储
+		(2)链接存储
+		(3)索引存储
+		(4)散列存储
+	4、时间复杂度
+		(1)	计算方式
+			案例：
+				int a=0,b=0;
+				for(int i=1;i<n;i++){
+					for(int j=1;j<n;j++){
+						a++;
+						b++; 
+					}
+				}
+			分析：
+				for(i=1;i<=n;i++)该行 i的取值范围是1~n，所以频度为n
+				for(j=1;j<n;j++)该行的频度取决于外层循环，为n，该循环内部的频度取决于这两层的循环，为n*n=n^2
+				
+				整体的时间复杂度为：T(n) = O(n^2 + n + n)
+				最快的增长项为n^2，所以T(n) = O(n^2)
+	5、空间复杂度
+
+二十四、系统调优
+	1、Mysql调优
+	2、Tomcat调优
+	3、Nginx调优
+	4、JVM调优
+	
+二十五、JXL、POI、JACOB办公文档处理
+
+二十六、Activti流程控制引擎
+
+二十七、ELK(Elasticsearch、Logstash、Kibana)数据分析框架
+
+二十八、ShardingSphere分库分表利器
+
+二十九、SpringBoot
+
+三十、Netty
+
+三十一、SPI、Dubbo
+
+三十二、Zookeeper
+
+三十三、JMS、ActivityMQ、Kafka、RocketMQ、RabbitMQ
+
+三十四、SpringCloud
+
+三十五、Eureka
+
+三十六、Ribbon
+
+三十七、Feign
+
+三十八、Hystrix
+
+三十九、Zuul
+
+四十、Docker
+
+四十一、Kubernetes
+
+四十二、人工智能
+	(1)Python
+	(2)神经网络
+	(3)脑类计算
+	(4)深度学习
+	
+四十三、区块链
+	(1)共识机制
+	(2)工作量证明原理
+	(3)挖矿算法
+	(4)密码学
+	
+四十四、大数据
+	(1)Hadoop
+	(2)Spark
+	(3)数据挖掘
+	
+四十五、物联网技术
