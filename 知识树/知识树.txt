@@ -325,12 +325,12 @@
 			所有集合的超级接口，定义了集合共有的方法，只能存储引用类型对象
 		[2]List
 			(1)ArrayList
-				[a]概念
+				[a]描述
 					数组类型的集合，底层采用数组实现，默认是一个Object类型动态空数组，并动态的扩容，
 					由于对集合的操作方法未采用到同步机制，所以是线程不安全的
 				[b]常用方法
 			(2)LinkedList
-				[a]概念
+				[a]描述
 					双端链表类型的集合，底层采用双端链表，每一个元素都对应一个Node，
 					Node中存放了上一个Node和下一个Node的实例，以及当前的数据元素
 				[b]常用方法，每次对集合进行添加和删除，都会更新修改次数，该集合不提供访问该次数的方法，可以通过子类新建方法获取该次数
@@ -365,7 +365,7 @@
 					(i)removeAll(collection)
 						删除指定集合内的多个指定元素
 			(3)Vector
-				[a]概念
+				[a]描述
 					数组类型的集合，底层采用数组实现，默认是一个容量为10的静态空数组，并动态的扩容，
 					由于对集合的操作采用了synchronized同步机制，保证了多线程的原子性，所以是线程安全的
 				[b]常用方法
@@ -387,6 +387,44 @@
 						删除所有元素，不会改变底层存储元素的数组的长度
 		[3]Set
 			(1)HashSet
+				[a]描述
+					HashSet是由HashMap数据结构实现的集合，元素无序且不能重复。
+					数据在HashMap中的结构是作为 key 存在的，而value统一都是Object PRESENT = new Object();
+				[b]构造方法
+					(a)无参构造方法
+						public HashSet(){
+							map = new HashMap<>();
+						}
+						直接创建一个HashMap，采用无参的HashMap构造方法，默认的容量是16，默认的加载因子是0.75
+					(b)指定初始容量
+						public HashSet(int initialCapacity){
+							map = new HashMap<>(initialCapacity);
+						}
+						创建一个指定初始容量的HashMap，默认加载因子是0.75
+					(c)指定初始容量和加载因子
+						public HashSet(int initialCapacity, float loadFactor){
+							map = new HashMap<>(initialCapacity, loadFactor);
+						}
+						创建一个指定初始容量和指定加载因子的HashMap
+					(d)包含指定集合元素
+						public HashSet(Collection<? extends E> c){
+							map = new HashMap<>(Math.max((int) (c.size()/.75f) + 1, 16));
+							addAll(c);
+						}
+						根据传入的集合创建一个计算得出的容量的HashMap，加载因子采用默认的0.75
+				[c]常用方法
+					(a)add(e)
+						会调用map.put(e,PRESENT)方法，将添加的数据对象作为key，new Object()对象作为value，
+						并返回是否添加成功
+					(b)addAll(collection)
+						添加一个集合元素，将指定集合内的元素添加到当前集合内
+					(c)remove(e)
+						删除一个集合元素，会调用map.remove(e)方法,并返回是否删除成功
+					(d)removeAll(collection);
+					(e)removeIf(filter)
+						根据指定的过滤器来删除集合内的元素，可采用lambda表达式方式
+					(f)clear()
+						会调用map.clear()方法，清空集合
 			(2)LinkedHashSet
 			(3)TreeSet
 		[4]Queue
