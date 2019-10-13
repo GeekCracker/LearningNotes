@@ -405,6 +405,15 @@
 	12、数据恢复
 	13、用户操作与授权	
 七、Redis数据库
+	1、Redis安装
+	2、Redis核心数据结构及常用命令
+		[1]string
+			
+		[2]hash
+		[3]list
+		[4]set
+		[5]zset		
+	3、Redis核心原理
 
 八、JavaEE
 	1、Tomcat服务器
