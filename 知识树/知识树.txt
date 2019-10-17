@@ -455,9 +455,11 @@
 		
 		[10]ArrayList、LinkedList和Vector的比较
 		
-		[11]HashMap和HashTable的比较
+		[11]HashSet和TreeSet的比较
 		
-		[12]Collections工具类
+		[12]HashMap和HashTable的比较
+		
+		[13]Collections工具类
 		
 	10、常用实用类
 		[1]包装类
@@ -760,14 +762,136 @@
 	13、用户操作与授权	
 七、Redis数据库
 	1、Redis安装
-	2、Redis核心数据结构及常用命令
+		下载地址
+		http://redis.io/download
+		linux下载及安装
+		wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+		#解压安装包
+		tar xzf redis-5.0.5.tar.gz
+		#切换到根目录
+		cd redis-5.0.5
+		#编译源码生成可执行文件
+		make
+	2、启动和退出
+		[1]启动server
+			src/redis-server redis.conf(需要后台启动的话，修改daemonize值为yes)
+		[2]进入client
+			src/redis-cli
+		[3]退出client
+			(1)quit
+			(2)exit
+		[4]关闭server
+			(1)pkill redis-server
+			(2)kill 进程号
+			(3)src/redis-cli shutdown
+	3、Redis核心数据结构及常用命令
 		[1]string
-			
+			字符串类型数据结构，key和value都是字符串，value最大可以容纳512M的数据
+			常用操作：
+			(1)set key value					//存入字符串键值对
+			(2)mset key value [key value...]	//批量存入字符串键值对
+			(3)setnx key value					//存入一个不存在的键值对
+			(4)get key							//获取一个字符串键值
+			(5)mget key [key...]				//批量获取字符串键值
+			(6)del key [key...]					//批量删除键
+			(7)expire key seconds				//对一个键设置过期时间
+			原子加减：(同时只有一个线程执行该操作)
+			(1)incr key							//将key中存储的数字加1
+			(2)decr key							//将key中存储的数字减1
+			(3)incrby key increment				//将key中存储的数字加上increment
+			(4)decrby key decrement				//将key中存储的数字减去decrement
+			应用场景：
 		[2]hash
+			hash数据结构，key是一个字符串，value是多个key-value键值对
+			常用操作：
+			(1)hset key field value						//在一个哈希表中存入一个键值对
+			(2)hmset key field value [field value...]	//在一个哈希表中存入多个键值对
+			(3)hsetnx key field value					//存入一个不存在的哈希表键值对
+			(4)hget key	field							//获取哈希表key对应的field键值
+			(5)hmget key field [field...]				//获取哈希表key对应的多个field键值
+			(6)hdel key field [field...]				//删除哈希表key对应的多个field键值
+			(7)hlen key									//获取哈希表key中field键值的数量
+			(8)hgetall key								//返回哈希表key中所有的filed键值
+			原子加减：(同时只有一个线程执行该操作)
+			(1)hincrby key field increment				//将哈希表key中field键的数字加上increment
+			应用场景：
 		[3]list
+			list数据结构，key是一个字符串，value是多个元素，元素之间可以重复，根据添加的顺序进行排序
+			常用操作：
+			(1)lpush key value [value...]	//将一个或多个value值放到key的左边
+			(2)rpush key value [value...]	//将一个或多个value值放到key的右边
+			(3)lpop key						//移除并返回key列表的头元素
+			(4)rpop key						//移除并返回key列表的尾元素
+			(5)lrange key start stop		//返回key列表中指定区间内的所有元素
+			(6)blpop key [key...] timeout	//移除并返回一个或多个key列表的头元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
+			(7)brpop key [key...] timeout	//移除并返回一个或多个key列表的尾元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
+			应用场景：
+				Stack(栈) = lpush + lpop -> FILO先进后出
+				Queue(队列)	= lpush + rpop -> FIFO先进先出
+				Blocking MQ(阻塞队列) = lpush + brpop -> FIFO先进先出基础上加了出的阻塞，如果没有列表没有数据，处于指定时间的阻塞状态
 		[4]set
-		[5]zset		
+			set数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是无序的
+			常用操作：
+			(1)sadd key member [member...]	//往集合key中存入一个或多个元素，元素存在则忽略，若key不存在则创建
+			(2)srem key member [member...]	//从集合key中删除一个或多个元素
+			(3)smembers	key					//获取集合key中的所有元素
+			(4)scard key					//获取集合key中的元素个数
+			(5)sismember key member			//判断元素member是否存在于集合key中
+			(6)srandmember key [count]		//从集合key中随机选出count个元素，元素不从集合key中删除
+			(7)spop key [count]				//从集合key中随机选出count个元素，元素从集合key中删除
+			运算操作：
+			(1)sinter key [key...]					//交集运算，取多个key集合的交集
+			(2)sintersotre destination key [key...]	//交集运算，取多个key集合的交集，并放到新的集合destination中
+			(3)sunion key [key...]					//并集运算，取多个key集合的并集
+			(4)sunionstore destination key [key...]	//并集运算，取多个key集合的并集，并放到新的集合destination中
+			(5)sdiff key [key...]					//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素
+			(6)sdiffstore destination key [key...]	//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素，并放到新的集合destination中
+			应用场景：
+			(1)抽奖
+				[a]点击参与抽奖加入集合
+					sadd key userId
+				[b]查看参与抽奖所有用户
+					smembers key
+				[c]抽取count名中奖者
+					srandmember key count	//抽奖后不删除用户，用于单个奖项
+					spop key count			//抽奖后删除用户，用于多个奖项，例如：一等奖，二等奖，三等奖
+			(2)商品筛选
+				sinter key [key...]	//取交集将商品分别放到多个分类集合里，取交集后，筛选出的就是符合条件的商品，缺点：添加商品时需要维护所有分类集合的数据，增加redis交互次数
+		[5]zset
+			zset数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是有序的
+			常用操作：
+			(1)zadd key score member [[score member]...]	//往有序集合key中添加一个或多个带分值的元素，
+			(2)zrem key member [member...]					//从有序集合key中删除一个或多个元素
+			(3)zscore key member							//返回有序集合中元素member元素的分值
+			(4)zincrby key increment member 				//为有序集合key中元素member的分值加increment
+			(5)zcard key									//返回有序集合key中元素个数
+			(6)zrange key start stop [withscores]			//根据集合元素分值正序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
+			(7)zrevrange key start stop [withscores]		//根据集合元素分值倒序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
+			运算操作：
+			(1)zunionstore destination numKeys key [key...]		//并集运算，获取多个key集合的并集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
+																//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
+			(2)zinterstore destination numkeys key [key...]		//交集运算，获取多个key集合的交集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
+																//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
 	3、Redis核心原理
+	
+	4、Redis持久化
+		[1]rdb快照文件
+			(1)开启快照
+				save 900 1		//900秒内如果有1次数据更新的操作，则更新快照文件
+				save 300 10		//300秒内如果有10次数据更新的操作，则更新快照文件
+				save 60 10000	//60秒内如果有10000次数据更新的操作，则更新快照文件
+			(2)关闭快照
+				#save 900 1		//在配置文件里将该配置注释掉即可关闭
+		[2]aof日志文件(Append Only File)
+			(1)开启aof日志文件
+				appendonly yes
+			(2)关闭aof日志文件
+				appendonly no
+			(3)aof文件名
+				appendfilename "appendonly.aof"
+	5、Redis集群
+	6、Redis缓存穿透
+	7、Redis缓存雪崩
 八、JavaEE
 	1、Tomcat服务器
 	2、Jetty服务器
