@@ -1097,16 +1097,247 @@
 
 二十九、ShardingSphere、MyCat、Atlas
 
-三十、SpringBoot
+三十、Netty
 
-三十一、Netty
+三十一、SPI、Dubbo
 
-三十二、SPI、Dubbo
+三十二、Zookeeper
 
-三十三、Zookeeper
+三十三、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
+	1、消息中间件
+		[1]作用:
+			(1)异步处理
+			(2)应用解耦
+			(3)限流销峰
+		[2]缺点
+			(1)可用性降低
+			(2)复杂度增高
+		[3]应用场景
+			订单系统->下订单后，通知多个系统，完成下单业务以及统计订单数据，减库存，财务报表等
+			短信、邮件系统->
+			聊天窗口->
+				.
+				.
+				.
+		[4]所具备功能
+			(1)优先级队列
+			(2)延迟队列
+			(3)死信队列
+				当消息消费失败时，该消息会进入死信队列重新尝试消费，以保证消息不会丢失
+			(4)队列模式
+			(5)消费模式(pull/push)
+				Topic主题发布-订阅模式下存在这两种模式
+				[a]pull
+					主动权在于消费方，优点是按需消费，而且服务端队列堆积的消息处理也相对简单；
+					缺点是存在消息延迟，无法确定拉取消息时间，
+				[b]push
+					主动权在于服务方，优点是实时性高，服务端可以统一管理来进行负载，不过也容易导致慢消费；
+					缺点就是发送消息的状态是集中式管理，对于服务端(broker)来说压力过大
+			(6)消息回溯
+			(7)消息堆积
+			(8)消息持久化
+				[a]策略刷盘
+				[b]定期刷盘
+				[c]手动刷盘
+			(9)消息追踪
+			(10)消息过滤
+			(11)流量控制
+			(12)消息顺序消费
+			(13)安全机制
+			(14)消息幂等性
+			(15)事务消息
+				.
+				.
+				.
+	2、JMS
+		[1]简介
+			JMS即Java消息服务（Java Message Service）应用程序接口，是一个Java平台中关于面向消息中间件（MOM）的API，
+			是一组Java应用程序接口，它提供消息的创建、发送、读取等一系列服务用于在两个应用程序之间，或分布式系统中发送消息，
+			进行异步通信。JMS提供了一组公共应用程序接口和响应的语法，类似于Java数据库的统一访问接口JDBC。
+			Java消息服务是一个与具体平台无关的API，绝大多数MOM提供商都对JMS提供支持。
+		[2]消息模型
+			(1)P2P(Ponit to Point)模型
+				P2P模型，即采用点对点的方式发送消息。P2P模型是基于队列的，消息生产者发送消息到队列，消息消费者从队列中接收消息，
+				队列的存在使得消息的异步传输称为可能，P2P模型在点对点的情况下进行消息传递时采用。
+			(2)Pub/Sub(Publish/Subscribe)发布-订阅模型
+				Pub/Sub发布-订阅模型定义了如何向一个内容节点发布和订阅消息，这个内容节点称为topic(主题)。主题可以认为是消息传递的中介，消息发布这将消息发布到某个主题，
+				而消息订阅者则从主题订阅消息。主题使得消息的订阅者与消息的发布者互相保持独立，不需要进行接触即可保证消息的传递，发布-订阅模型在消息的一对多广播时采用。
+	3、ActiveMQ
+		[1]简介
+			ActiveMQ是Apache所提供的一个开源的消息系统，完全采用Java来实现，因此，它能很好地支持J2EE提出的JMS（Java Message Service,即Java消息服务）规范。
+		[2]安装
+			(1)下载地址
+				http://activemq.apache.org/components/classic/download/
+			(2)linux安装
+			(3)windows安装
+				(a)解压apache-activemq-5.15.10-bin.zip文件压缩包
+				(b)进入bin目录下，选择64位或32位
+					先点击InstallService.bat文件安装服务
+					再点击activemq.bat文件启动即可
+		[3]基本使用
+			(1)添加依赖
+				<dependency>
+					<groupId>org.apache.activemq</groupId>
+					<artifactId>activemq-core</artifactId>
+					<version>5.7.0</version>
+				</dependency>
+			(2)消息提供者(P2P模型)
+				(a)第一步:创建连接工厂类
+					String brokerURL = "tcp://localhost:61616";//ActiveMQ服务器对外提供服务的url
+					ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerURL);
+				(b)第二步:创建连接并启动连接
+					ActiveMQConnection connection = (ActiveMQConnection)connectionFactory.createConnection();
+					connection.start();
+				(c)第三步:创建会话
+					//参数列表:
+					//第一个参数:是否支持事务，如果为true，则会忽略第二个参数，被jms服务器设置为SESSION_TRANSACTED
+					//第二个参数:当第一个参数为false时，第二个参数值可为Session.AUTO_ACKNOWLEDGE，Session.CLIENT_ACKNOWLEDGE，Session.DUPS_OK_ACKNOWLEDGE其中一个。
+					//			 Session.AUTO_ACKNOWLEDGE 为自动确认，客户端发送和接收消息不需要做额外的工作。哪怕是接收端发生异常，也会被当作正常发送成功。
+					//			 Session.CLIENT_ACKNOWLEDGE 为客户端确认。客户端接收到消息后，必须调用javax.jms.Message的acknowledge方法。jms服务器才会当作发送成功，并删除消息。
+					//			 Session.DUPS_OK_ACKNOWLEDGE 允许副本的确认模式。一旦接收方应用程序的方法调用从处理消息处返回，会话对象就会确认消息的接收；而且允许重复确认。
+					ActiveMQSession session = (ActiveMQSession)connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+				(d)第四步:创建队列
+					String queueName = "queueName";//队列名称
+					Destination destination = session.createQueue(queueName);
+				(e)第五步:创建消息提供者
+					MessageProducer producer = session.createProducer(destination);
+				(f)第六步:发送消息
+					TextMessage textMessage = session.createTextMessage();
+					textMessage.setStringProperty("msg","操作成功！");
+					producer.sendMessage(textMessage);
+				(g)第七步:关闭连接
+					connection.close();
+			(3)消息消费者(P2P模型)
+				(a)第一步:创建连接工厂类
+					String brokerURL = "tcp://localhost:61616";//ActiveMQ服务器对外提供服务的url
+					ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(brokerURL);
+				(b)第二步:创建连接并启动连接
+					ActiveMQConnection connection = (ActiveMQConnection)connectionFactory.createConnection();
+					connection.start();
+				(c)第三步:创建会话
+					//参数列表:
+					//第一个参数:是否支持事务，如果为true，则会忽略第二个参数，被jms服务器设置为SESSION_TRANSACTED
+					//第二个参数:当第一个参数为false时，第二个参数值可为Session.AUTO_ACKNOWLEDGE，Session.CLIENT_ACKNOWLEDGE，Session.DUPS_OK_ACKNOWLEDGE其中一个。
+					//			 Session.AUTO_ACKNOWLEDGE 为自动确认，客户端发送和接收消息不需要做额外的工作。哪怕是接收端发生异常，也会被当作正常发送成功。
+					//			 Session.CLIENT_ACKNOWLEDGE 为客户端确认。客户端接收到消息后，必须调用javax.jms.Message的acknowledge方法。jms服务器才会当作发送成功，并删除消息。
+					//			 Session.DUPS_OK_ACKNOWLEDGE 允许副本的确认模式。一旦接收方应用程序的方法调用从处理消息处返回，会话对象就会确认消息的接收；而且允许重复确认。
+					ActiveMQSession session = (ActiveMQSession)connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+				(d)第四步:创建队列
+					String queueName = "queueName";//队列名称
+					Destination destination = session.createQueue(queueName);
+				(e)第五步:创建消息消费者
+					MessageConsumer consumer = session.createConsumer(destination);
+				(f)第六步:消费消息
+					consumer.setMessageListener(new MessageListener() {
+						@Override
+						public void onMessage(Message message) {
+							try {
+								String msg = message.getStringProperty("msg");
+								System.out.println(msg);
+							} catch (JMSException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+				(g)第七步:关闭连接
+					connection.close();
+		[4]SpringBoot集成
+		
+		[5]支持客户端语言
+			Java、C、C++、C#、Ruby、Perl、Python、JavaScript(ajax)和PHP
+		[6]特点
+			(1)优点
+				[a]实现简单，可以快速上手
+				[b]可控性比较好，还有比较好的监控机制和界面
+			(2)缺点
+				[a]吞吐量低
+					每秒处理的请求数低，不能在高并发的场景下使用
+				[b]无分片功能
+					无消息分片功能，不支持集群服务，单机环境下不能处理大量的请求，需手动分片
+	4、Kafka
+	5、RocketMQ
+	6、RabbitMQ
+		[1]简介
+			RabbitMQ是实现了高级消息队列协议（AMQP）的开源消息代理软件（亦称面向消息的中间件），由Rabbit科技有限公司所开发,。
+			RabbitMQ服务器是用Erlang语言编写的，而集群和故障转移是构建在开放电信平台框架上的。所有主要的编程语言均有与代理接口通讯的客户端库。
+		[2]安装
+			(1)下载地址
+				https://www.rabbitmq.com/download.html
+			(2)linux安装
+				[a]安装erlang
+				[b]安装rabbitmq
+			(3)windows安装
+		[3]基本使用
+			(1)添加依赖
+				<dependency>
+					<groupId>com.rabbitmq</groupId>
+					<artifactId>amqp-client</artifactId>
+					<version>3.6.5</version>
+				</dependency>
+			(2)直接交换机(DirectExchange)	
+				[a]消息提供者
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();
+					(d)第四步:发送消息
+						AMQP.BasicProperties props = new AMQP.BasicProperties();//基础属性，可以为null
+						String message = "消息消息";
+						channel.basicPublish("exchange001","routingKey001",props,message.getBytes());
+					(e)第五步:关闭连接
+						channel.close();
+						connection.close();
+				[b]消息消费者
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();
+					(d)第四步:声明消息通道的队列
+						String queueName = "routingKey001";
+						//参数列表:队列名称，是否持久化队列，是否独占，是否自动删除队列，其他参数
+						channel.queueDeclare(queueName,true,false,false,null);
+					(e)第五步:创建消息消费者
+						QueueingConsumer consumer = new QueueingConsumer(channel);
+					(f)第六步:消费消息
+						QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
+						System.out.println(new String(delivery.getBody()));
+					(g)第七步:消息消费完成确认
+						//参数列表：队列名称
+						//          是否自动签收，保证消息可靠性投递
+						//          消费者对象
+						channel.basicConsume(queueName,true,queueingConsumer);
+					(h)第八步:关闭连接
+						channel.close();
+						connection.close();
+			(3)主题交换机(TopicExchange)
+				[a]消息提供者
+					(a)
+					(b)
+					(c)
+				[b]消息消费者
+		[4]SpringBoot集成
+		[5]支持客户端语言
+		[6]特点
+			(1)优点
+			(2)缺点
+	7、ZeroMQ
 
-三十四、JMS、ActivityMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
-
+三十四、SpringBoot
+	
 三十五、SpringCloud
 
 三十六、Eureka
