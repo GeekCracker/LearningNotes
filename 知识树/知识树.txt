@@ -760,138 +760,159 @@
 	11、数据备份
 	12、数据恢复
 	13、用户操作与授权	
-七、Redis数据库
-	1、Redis安装
-		下载地址
-		http://redis.io/download
-		linux下载及安装
-		wget http://download.redis.io/releases/redis-5.0.5.tar.gz
-		#解压安装包
-		tar xzf redis-5.0.5.tar.gz
-		#切换到根目录
-		cd redis-5.0.5
-		#编译源码生成可执行文件
-		make
-	2、启动和退出
-		[1]启动server
-			src/redis-server redis.conf(需要后台启动的话，修改daemonize值为yes)
-		[2]进入client
-			src/redis-cli
-		[3]退出client
-			(1)quit
-			(2)exit
-		[4]关闭server
-			(1)pkill redis-server
-			(2)kill 进程号
-			(3)src/redis-cli shutdown
-	3、Redis核心数据结构及常用命令
-		[1]string
-			字符串类型数据结构，key和value都是字符串，value最大可以容纳512M的数据
-			常用操作：
-			(1)set key value					//存入字符串键值对
-			(2)mset key value [key value...]	//批量存入字符串键值对
-			(3)setnx key value					//存入一个不存在的键值对
-			(4)get key							//获取一个字符串键值
-			(5)mget key [key...]				//批量获取字符串键值
-			(6)del key [key...]					//批量删除键
-			(7)expire key seconds				//对一个键设置过期时间
-			原子加减：(同时只有一个线程执行该操作)
-			(1)incr key							//将key中存储的数字加1
-			(2)decr key							//将key中存储的数字减1
-			(3)incrby key increment				//将key中存储的数字加上increment
-			(4)decrby key decrement				//将key中存储的数字减去decrement
-			应用场景：
-		[2]hash
-			hash数据结构，key是一个字符串，value是多个key-value键值对
-			常用操作：
-			(1)hset key field value						//在一个哈希表中存入一个键值对
-			(2)hmset key field value [field value...]	//在一个哈希表中存入多个键值对
-			(3)hsetnx key field value					//存入一个不存在的哈希表键值对
-			(4)hget key	field							//获取哈希表key对应的field键值
-			(5)hmget key field [field...]				//获取哈希表key对应的多个field键值
-			(6)hdel key field [field...]				//删除哈希表key对应的多个field键值
-			(7)hlen key									//获取哈希表key中field键值的数量
-			(8)hgetall key								//返回哈希表key中所有的filed键值
-			原子加减：(同时只有一个线程执行该操作)
-			(1)hincrby key field increment				//将哈希表key中field键的数字加上increment
-			应用场景：
-		[3]list
-			list数据结构，key是一个字符串，value是多个元素，元素之间可以重复，根据添加的顺序进行排序
-			常用操作：
-			(1)lpush key value [value...]	//将一个或多个value值放到key的左边
-			(2)rpush key value [value...]	//将一个或多个value值放到key的右边
-			(3)lpop key						//移除并返回key列表的头元素
-			(4)rpop key						//移除并返回key列表的尾元素
-			(5)lrange key start stop		//返回key列表中指定区间内的所有元素
-			(6)blpop key [key...] timeout	//移除并返回一个或多个key列表的头元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
-			(7)brpop key [key...] timeout	//移除并返回一个或多个key列表的尾元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
-			应用场景：
-				Stack(栈) = lpush + lpop -> FILO先进后出
-				Queue(队列)	= lpush + rpop -> FIFO先进先出
-				Blocking MQ(阻塞队列) = lpush + brpop -> FIFO先进先出基础上加了出的阻塞，如果没有列表没有数据，处于指定时间的阻塞状态
-		[4]set
-			set数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是无序的
-			常用操作：
-			(1)sadd key member [member...]	//往集合key中存入一个或多个元素，元素存在则忽略，若key不存在则创建
-			(2)srem key member [member...]	//从集合key中删除一个或多个元素
-			(3)smembers	key					//获取集合key中的所有元素
-			(4)scard key					//获取集合key中的元素个数
-			(5)sismember key member			//判断元素member是否存在于集合key中
-			(6)srandmember key [count]		//从集合key中随机选出count个元素，元素不从集合key中删除
-			(7)spop key [count]				//从集合key中随机选出count个元素，元素从集合key中删除
-			运算操作：
-			(1)sinter key [key...]					//交集运算，取多个key集合的交集
-			(2)sintersotre destination key [key...]	//交集运算，取多个key集合的交集，并放到新的集合destination中
-			(3)sunion key [key...]					//并集运算，取多个key集合的并集
-			(4)sunionstore destination key [key...]	//并集运算，取多个key集合的并集，并放到新的集合destination中
-			(5)sdiff key [key...]					//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素
-			(6)sdiffstore destination key [key...]	//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素，并放到新的集合destination中
-			应用场景：
-			(1)抽奖
-				[a]点击参与抽奖加入集合
-					sadd key userId
-				[b]查看参与抽奖所有用户
-					smembers key
-				[c]抽取count名中奖者
-					srandmember key count	//抽奖后不删除用户，用于单个奖项
-					spop key count			//抽奖后删除用户，用于多个奖项，例如：一等奖，二等奖，三等奖
-			(2)商品筛选
-				sinter key [key...]	//取交集将商品分别放到多个分类集合里，取交集后，筛选出的就是符合条件的商品，缺点：添加商品时需要维护所有分类集合的数据，增加redis交互次数
-		[5]zset
-			zset数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是有序的
-			常用操作：
-			(1)zadd key score member [[score member]...]	//往有序集合key中添加一个或多个带分值的元素，
-			(2)zrem key member [member...]					//从有序集合key中删除一个或多个元素
-			(3)zscore key member							//返回有序集合中元素member元素的分值
-			(4)zincrby key increment member 				//为有序集合key中元素member的分值加increment
-			(5)zcard key									//返回有序集合key中元素个数
-			(6)zrange key start stop [withscores]			//根据集合元素分值正序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
-			(7)zrevrange key start stop [withscores]		//根据集合元素分值倒序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
-			运算操作：
-			(1)zunionstore destination numKeys key [key...]		//并集运算，获取多个key集合的并集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
-																//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
-			(2)zinterstore destination numkeys key [key...]		//交集运算，获取多个key集合的交集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
-																//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
-	3、Redis核心原理
-	
-	4、Redis持久化
-		[1]rdb快照文件
-			(1)开启快照
-				save 900 1		//900秒内如果有1次数据更新的操作，则更新快照文件
-				save 300 10		//300秒内如果有10次数据更新的操作，则更新快照文件
-				save 60 10000	//60秒内如果有10000次数据更新的操作，则更新快照文件
-			(2)关闭快照
-				#save 900 1		//在配置文件里将该配置注释掉即可关闭
-		[2]aof日志文件(Append Only File)
-			(1)开启aof日志文件
-				appendonly yes
-			(2)关闭aof日志文件
-				appendonly no
-			(3)aof文件名
-				appendfilename "appendonly.aof"
-	5、Redis集群
-	6、Redis缓存穿透
-	7、Redis缓存雪崩
+七、NoSql(非关系型数据库):Redis、MongoDB
+	1、Redis
+		[1]简介
+		
+		[2]安装
+			下载地址
+			http://redis.io/download
+			linux下载及安装
+			wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+			#解压安装包
+			tar xzf redis-5.0.5.tar.gz
+			#切换到根目录
+			cd redis-5.0.5
+			#编译源码生成可执行文件
+			make
+		[3]启动和退出
+			(1)启动server
+				src/redis-server redis.conf(需要后台启动的话，修改daemonize值为yes)
+			(2)进入client
+				src/redis-cli
+			(3)退出client
+				[a]quit
+				[b]exit
+			(4)关闭server
+				[a]pkill redis-server
+				[b]kill 进程号
+				[c]src/redis-cli shutdown
+		[4]Redis核心数据结构及常用命令
+			(1)string
+				[a]描述
+					字符串类型数据结构，key和value都是字符串，value最大可以容纳512M的数据
+				[b]常用操作：
+					(a)set key value					//存入字符串键值对
+					(b)mset key value [key value...]	//批量存入字符串键值对
+					(c)setnx key value					//存入一个不存在的键值对
+					(d)get key							//获取一个字符串键值
+					(e)mget key [key...]				//批量获取字符串键值
+					(f)del key [key...]					//批量删除键
+					(g)expire key seconds				//对一个键设置过期时间
+				[c]原子操作：(同时只有一个线程执行该操作)
+					(a)incr key							//将key中存储的数字加1
+					(b)decr key							//将key中存储的数字减1
+					(c)incrby key increment				//将key中存储的数字加上increment
+					(d)decrby key decrement				//将key中存储的数字减去decrement
+				[d]应用场景：
+			(2)hash
+				[a]描述
+					hash数据结构，key是一个字符串，value是多个key-value键值对
+				[b]常用操作：
+					(a)hset key field value						//在一个哈希表中存入一个键值对
+					(b)hmset key field value [field value...]	//在一个哈希表中存入多个键值对
+					(c)hsetnx key field value					//存入一个不存在的哈希表键值对
+					(d)hget key	field							//获取哈希表key对应的field键值
+					(e)hmget key field [field...]				//获取哈希表key对应的多个field键值
+					(f)hdel key field [field...]				//删除哈希表key对应的多个field键值
+					(g)hlen key									//获取哈希表key中field键值的数量
+					(h)hgetall key								//返回哈希表key中所有的filed键值
+				[c]原子操作：(同时只有一个线程执行该操作)
+					(a)hincrby key field increment				//将哈希表key中field键的数字加上increment
+				[d]应用场景：
+			(3)list
+				[a]描述
+					list数据结构，key是一个字符串，value是多个元素，元素之间可以重复，根据添加的顺序进行排序
+				[b]常用操作：
+					(a)lpush key value [value...]	//将一个或多个value值放到key的左边
+					(b)rpush key value [value...]	//将一个或多个value值放到key的右边
+					(c)lpop key						//移除并返回key列表的头元素
+					(d)rpop key						//移除并返回key列表的尾元素
+					(e)lrange key start stop		//返回key列表中指定区间内的所有元素
+					(f)blpop key [key...] timeout	//移除并返回一个或多个key列表的头元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
+					(g)brpop key [key...] timeout	//移除并返回一个或多个key列表的尾元素，若列表中没有元素，阻塞等待timeout秒，如果timeout=0一直处于阻塞等待状态
+				[c]应用场景：
+					(a)Stack(栈) = lpush + lpop -> FILO先进后出
+					(b)Queue(队列)	= lpush + rpop -> FIFO先进先出
+					(c)Blocking MQ(阻塞队列) = lpush + brpop -> FIFO先进先出基础上加了出的阻塞，如果没有列表没有数据，处于指定时间的阻塞状态
+			(4)set
+				[a]描述
+					set数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是无序的
+				[b]常用操作：
+					(a)sadd key member [member...]	//往集合key中存入一个或多个元素，元素存在则忽略，若key不存在则创建
+					(b)srem key member [member...]	//从集合key中删除一个或多个元素
+					(c)smembers	key					//获取集合key中的所有元素
+					(d)scard key					//获取集合key中的元素个数
+					(e)sismember key member			//判断元素member是否存在于集合key中
+					(f)srandmember key [count]		//从集合key中随机选出count个元素，元素不从集合key中删除
+					(g)spop key [count]				//从集合key中随机选出count个元素，元素从集合key中删除
+				[c]运算操作：
+					(a)sinter key [key...]					//交集运算，取多个key集合的交集
+					(b)sintersotre destination key [key...]	//交集运算，取多个key集合的交集，并放到新的集合destination中
+					(c)sunion key [key...]					//并集运算，取多个key集合的并集
+					(d)sunionstore destination key [key...]	//并集运算，取多个key集合的并集，并放到新的集合destination中
+					(e)sdiff key [key...]					//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素
+					(f)sdiffstore destination key [key...]	//差集运算，以第一个key集合为准，删除第一个集合中在其他集合中所存在的元素，并放到新的集合destination中
+				[d]应用场景：
+					(a)抽奖
+						a、点击参与抽奖加入集合
+							sadd key userId
+						b、查看参与抽奖所有用户
+							smembers key
+						c、抽取count名中奖者
+							srandmember key count	//抽奖后不删除用户，用于单个奖项
+							spop key count			//抽奖后删除用户，用于多个奖项，例如：一等奖，二等奖，三等奖
+					(b)商品筛选
+						sinter key [key...]	//取交集将商品分别放到多个分类集合里，取交集后，筛选出的就是符合条件的商品，缺点：添加商品时需要维护所有分类集合的数据，增加redis交互次数
+			(5)zset
+				[a]描述
+					zset数据结构，key是一个字符串，value是多个元素，元素之间不能重复，并且是有序的
+				[b]常用操作：
+					(a)zadd key score member [[score member]...]	//往有序集合key中添加一个或多个带分值的元素，
+					(b)zrem key member [member...]					//从有序集合key中删除一个或多个元素
+					(c)zscore key member							//返回有序集合中元素member元素的分值
+					(d)zincrby key increment member 				//为有序集合key中元素member的分值加increment
+					(e)zcard key									//返回有序集合key中元素个数
+					(f)zrange key start stop [withscores]			//根据集合元素分值正序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
+					(g)zrevrange key start stop [withscores]		//根据集合元素分值倒序获取集合key中的指定索引(非分值)范围内的元素，并可以选择是否查询分值
+				[c]运算操作：
+					(a)zunionstore destination numKeys key [key...]		//并集运算，获取多个key集合的并集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
+																		//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
+					(b)zinterstore destination numkeys key [key...]		//交集运算，获取多个key集合的交集，并放到新的指定的集合destination集合中，numKeys为参与计算的key集合个数
+																		//如果多个key集合中存在相同的member元素，则并集内的member元素分值，是这几个key中该member元素分值的和
+		[5]Redis核心原理
+		
+		[6]Redis持久化
+			(1)rdb快照文件
+				[a]开启快照
+					save 900 1		//900秒内如果有1次数据更新的操作，则更新快照文件
+					save 300 10		//300秒内如果有10次数据更新的操作，则更新快照文件
+					save 60 10000	//60秒内如果有10000次数据更新的操作，则更新快照文件
+				[b]关闭快照
+					#save 900 1		//在配置文件里将该配置注释掉即可关闭
+			(2)aof日志文件(Append Only File)
+				[a]开启aof日志文件
+					appendonly yes
+				[b]关闭aof日志文件
+					appendonly no
+				[c]aof文件名
+					appendfilename "appendonly.aof"
+		[7]Redis集群
+		
+		[8]Redis缓存穿透
+		
+		[9]Redis缓存雪崩
+	2、MongoDB
+		[1]简介
+			MongoDB 是一个基于分布式文件存储的数据库。由 C++ 语言编写。旨在为 WEB 应用提供可扩展的高性能数据存储解决方案。
+			MongoDB 是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。
+		[2]安装
+		
+		[3]常用操作
+		
+		[4]核心原理
+		
+		
 八、JavaEE
 	1、Tomcat服务器
 	2、Jetty服务器
@@ -1095,8 +1116,25 @@
 
 二十八、ELK(Elasticsearch、Logstash、Kibana)数据分析框架
 
-二十九、ShardingSphere、MyCat、Atlas
-
+二十九、分库分表中间件TDDL Smart Client、Atlas、Cobar、MyCat、Oceanus、OneProxy、ShardingSphere
+	1、TDDL Smart Client
+	2、Atlas
+	3、Cobar
+	4、MyCat
+	5、Oceanus
+	6、OneProxy
+	7、ShardingSphere
+		[1]官方文档
+			https://shardingsphere.apache.org/index_zh.html
+		[2]简介
+		
+		[3]数据分片
+		[4]读写分离
+		[5]分布式事务
+		[6]SPI扩展
+		[7]Sharding-JDBC
+		[8]Sharding-Proxy
+		[9]Sharding-Sidecar
 三十、Netty
 
 三十一、SPI、Dubbo
@@ -1244,7 +1282,7 @@
 		[4]SpringBoot集成
 		
 		[5]支持客户端语言
-			Java、C、C++、C#、Ruby、Perl、Python、JavaScript(ajax)和PHP
+			Java、C、C++、C#、Ruby、Perl、Python、AJAX和PHP
 		[6]特点
 			(1)优点
 				[a]实现简单，可以快速上手
@@ -1255,11 +1293,23 @@
 				[b]无分片功能
 					无消息分片功能，不支持集群服务，单机环境下不能处理大量的请求，需手动分片
 	4、Kafka
+	
 	5、RocketMQ
+		[1]简介
+			
+		[2]安装
+		[3]基本使用
+		[4]消息持久化
+		[5]SpringBoot集成
+		[6]支持客户端语言
+		[7]特点
+			(1)优点
+			(2)缺点
 	6、RabbitMQ
 		[1]简介
 			RabbitMQ是实现了高级消息队列协议（AMQP）的开源消息代理软件（亦称面向消息的中间件），由Rabbit科技有限公司所开发,。
-			RabbitMQ服务器是用Erlang语言编写的，而集群和故障转移是构建在开放电信平台框架上的。所有主要的编程语言均有与代理接口通讯的客户端库。
+			RabbitMQ服务器是用爱立信公司所开发的Erlang语言编写的，继承了Erlang自身高并发的特性，而集群和故障转移是构建在开放电信平台框架上的。
+			所有主要的编程语言均有与代理接口通讯的客户端库。
 		[2]安装
 			(1)下载地址
 				https://www.rabbitmq.com/download.html
@@ -1274,8 +1324,16 @@
 					<artifactId>amqp-client</artifactId>
 					<version>3.6.5</version>
 				</dependency>
-			(2)直接交换机(DirectExchange)	
-				[a]消息提供者
+			(2)直连交换机(DirectExchange)	
+				[a]简述
+					直连交换机，默认的交换机类型，如果没有指定交换机，会通过Broker服务器默认指定的交换机进行消息的传递，
+					前提条件是消费者绑定的队列名称和路由键名称一致，这是RabbitMQ的容错机制，正如RabbitMQ管理页面上对默认交换机的描述：
+					The default exchange is implicitly bound to every queue, with a routing key equal to the queue name. 
+					It is not possible to explicitly bind to, or unbind from the default exchange. It also cannot be deleted.
+					默认交换器隐式地绑定到每个队列，路由键等于队列名称。无法显式绑定到默认交换器或从默认交换器取消绑定。它也不能被删除。
+					绑定了直连交换机的所有队列，同一份消息只能被其中的一个队列对应的消费者所消费，如果消息没有被消费者消费，会一直存在于交换机内，
+					直到有消费者队列绑定到该交换机，内部有负载均衡的算法
+				[b]消息提供者
 					(a)第一步:创建连接工厂，并设置工厂属性
 						ConnectionFactory connectionFactory = new ConnectionFactory();
 						connectionFactory.setHost("111.231.111.161");//服务器ip
@@ -1294,7 +1352,7 @@
 					(e)第五步:关闭连接
 						channel.close();
 						connection.close();
-				[b]消息消费者
+				[c]消息消费者
 					(a)第一步:创建连接工厂，并设置工厂属性
 						ConnectionFactory connectionFactory = new ConnectionFactory();
 						connectionFactory.setHost("111.231.111.161");//服务器ip
@@ -1324,16 +1382,137 @@
 						channel.close();
 						connection.close();
 			(3)主题交换机(TopicExchange)
+				[a]简述
+					
+				[b]消息提供者
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码					
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();						
+					(c)第四步:携带多个路由键向指定的交换机内发布消息
+						String exchangeName = "topicExchange";//主题交换机名称
+						String routingKey001 = "topic.routing";
+						String routingKey002 = "topic.routing.key002";
+						String routingKey003 = "topic.routing.key003";
+						
+						channel.basicPublish(exchangeName,routingKey001,null,"第一条消息".getBytes());
+						channel.basicPublish(exchangeName,routingKey002,null,"第二条消息".getBytes());
+						channel.basicPublish(exchangeName,routingKey003,null,"第三条消息".getBytes());
+						
+				[c]消息消费者
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码					
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();
+					(d)第四步:声明一个主题类型的交换机
+						//参数列表
+						//交换机名称，交换机类型，是否持久化交换机，是否在没有队列绑定时自动删除交换机，
+						//是否是内置交换机(内置交换机，客户端无法向该交换机发送消息，只能通过交换机路由到该交换机)，其他结构化参数						
+						channel.exchangeDeclare("topicExchange","topic",true,false,false,null);
+					(e)第五步:声明一个队列
+						//参数列表
+						//队列名称，是否持久化队列，是否独占的(如果是独占的，会对队列加锁，同时只能有一个客户端可以访问该队列，可避免重复消费)，
+						//是否自动删除队列(如果是自动删除，当最后一个消费者释放连接后会删除该队列)，其他结构化参数
+						channel.queueDeclare("topicQueue",true,true,false,null);
+					(f)第六步:建立交换机与消息队列的绑定关系
+						String bindStr = "topic.#";//绑定topic前缀的所有路由键，通过路由键传递消息
+						channel.queueBind("topicQueue","topicExchange",bindStr);
+					(g)第七步:声明消费者
+						QueueingConsumer queueingConsumer = new QueueingConsumer(channel);
+					(h)第八步:消费消息
+						channel.basicConsume("topicQueue",true,queueingConsumer);
+						QueueingConsumer.Delivery delivery = queueingConsumer.nextDelivery();
+			(4)扇形交换机(FanoutExchange)
+				[a]简述
+					扇形交换机不需要绑定路由键，所有订阅了扇形交换机的队列都可以收到消息，由于扇形交换机没有一系列的队列匹配规则，所以扇形交换机的效率最高，
+					但是在一些场景下不能使用，例如:下订单减库存的业务场景，所有的消息消费者都能够订阅到此消息，会造成业务的重复处理
 				[a]消息提供者
-					(a)
-					(b)
-					(c)
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码					
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();
+					(d)第四步:发送消息
+						String fanoutExchangeName = "fanoutExchange";
+						String routingKey = "fanoutRoutingKey";
+						//参数列表
+						//交换机名称，路由键，其他结构化参数，需要发布的消息
+						channel.basicPublish(fanoutExchangeName,routingKey,null,"测试扇形交换机。。。。。。".getBytes());
 				[b]消息消费者
-		[4]SpringBoot集成
-		[5]支持客户端语言
-		[6]特点
+					(a)第一步:创建连接工厂，并设置工厂属性
+						ConnectionFactory connectionFactory = new ConnectionFactory();
+						connectionFactory.setHost("111.231.111.161");//服务器ip
+						connectionFactory.setPort(5672);//服务器提供服务的端口
+						connectionFactory.setVirtualHost("/test");//虚拟主机
+						connectionFactory.setUsername("zhangsan");//登录用户名
+						connectionFactory.setPassword("123456");//登录密码					
+					(b)第二步:通过连接工厂创建连接
+						Connection connection = connectionFactory.newConnection();
+					(c)第三步:通过连接创建消息通道
+						Channel channel = connection.createChannel();
+					(d)第四步:创建扇形交换机
+						//参数列表
+						//交换机名称，交换机类型，是否持久化交换机，是否自动删除，是否独占，其他结构化参数
+						channel.exchangeDeclare("fanoutExchange","fanout",true,false,false,null);
+			(5)头交换机(HandersExchange)
+				[a]消息提供者
+				[b]消息消费者
+			(6)基础属性(消息头信息)
+				Map<String,Object> headsMap = new HashMap<>();
+				headsMap.put("company","companyName");
+				headsMap.put("name","employeeName");
+			
+				AMQP.BasicProperties basicProperties = new AMQP.BasicProperties().builder()
+					.deliveryMode(2)//2标识持久化消息  1标识 服务重启后 消息不会被持久化
+					.expiration("10000")//消息过期10s，当消息10s时还没被消费时，该消息会被交换机删除掉
+					.contentEncoding("utf-8")
+					.correlationId(UUID.randomUUID().toString())//用作可靠性投递
+					.headers(headsMap)
+					.build();
+		[4]可靠性投递
+		
+		[5]消息持久化
+		
+		[6]SpringBoot集成
+			(1)引入依赖
+			(2)配置信息
+			(3)注解
+			
+		[7]支持客户端语言
+			Python、Ruby、.NET、Java、JMS、C、PHP、ActionScript、XMPP、STOMP等，支持AJAX
+		[8]特点
 			(1)优点
+				[a]支持单机与集群模式，集群模式下支持主从模式，可用性高
+				[b]由于erlang的语言特性，使用RAM模式时性能很好
+				[c]数据可靠性比较好，支持同步/异步的可靠性投递
+				[d]支持队列数据的持久化
+				[e]镜像模式下支持主从同步
+				[f]比较成熟的开源框架，社区活跃性和API与文档完备性较高
 			(2)缺点
+				[a]新加入的从服务器不会同步主服务器数据，可能会造成数据丢失
+				[b]消息堆积程度与性能呈反比，堆积数据量过大，会有明显的性能下降
+				[c]erlang语言难度较大，集群不支持动态扩展
+				[d]不支持事务消息，消息吞吐能力有限
 	7、ZeroMQ
 
 三十四、SpringBoot
