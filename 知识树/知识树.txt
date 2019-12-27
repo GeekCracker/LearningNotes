@@ -1489,18 +1489,79 @@
 					.correlationId(UUID.randomUUID().toString())//用作可靠性投递
 					.headers(headsMap)
 					.build();
-		[4]可靠性投递
-		
-		[5]消息持久化
-		
-		[6]SpringBoot集成
+		[4]SpringBoot集成
 			(1)引入依赖
-			(2)配置信息
-			(3)注解
-			
-		[7]支持客户端语言
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-amqp</artifactId>
+					<version>2.1.6.RELEASE</version>
+				</dependency>
+			(2)配置信息(application.properties)
+				#RabbitMq
+				spring.rabbitmq.host=111.231.111.161
+				spring.rabbitmq.port=5672
+				spring.rabbitmq.username=zhangsan
+				spring.rabbitmq.password=123456
+				spring.rabbitmq.virtual-host=/
+
+
+				#开启消息确认模式
+				spring.rabbitmq.publisher-confirms=true
+				#开启消息可达监听
+				spring.rabbitmq.publisher-returns=true
+				#开启不可达消息不会被broker给删除
+				spring.rabbitmq.template.mandatory=true
+				#设置连接超时
+				spring.rabbitmq.connection-timeout=10000		
+			(3)@Bean注入
+				[a]创建队列
+					@Bean
+					public Queue queue() {
+						//队列名称，是否持久化
+						return new Queue("queue-name",true);
+					}
+				[b]创建交换机
+					@Bean
+					public DirectExchange exchange() {
+						//交换机名称，是否持久化，是否自动删除
+						return new DirectExchange("exchange-name",true,false);
+					}
+				[c]将交换机与队列通过路由键绑定
+					@Bean
+					public Binding binding(Queue queue, DirectExchange exchange) {
+						//通过路由键将队列绑定到交换机上
+						return BindingBuilder.bind(queue).to(exchange).with("routingKey");
+					}			
+			(4)注解
+				[a]消息提供者
+					@Service
+					public class MessageServiceImpl extends BaseServiceImpl<Message> implements MessageService{
+
+						@Autowired
+						private RabbitTemplate rabbitTemplate;
+
+						@Override
+						public void sendMessage(Message message){
+							//通过rabbitTemplate向交换机发送消息，并携带路由键
+							rabbitTemplate.convertAndSend("exchange-name","routingKey",message);
+						}
+					}
+				[b]消息消费者
+					//监听多个队列
+					@Service
+					@RabbitListener(queues = {"queue-name"})
+					public class MessageServiceImpl extends BaseServiceImpl<Message> implements MessageService {
+						
+						//接收消息的方法
+						@RabbitHandler
+						@Override
+						public void acceptMessage(Message message) {
+							System.out.println(message);
+						}
+					}
+		[5]支持客户端语言
 			Python、Ruby、.NET、Java、JMS、C、PHP、ActionScript、XMPP、STOMP等，支持AJAX
-		[8]特点
+		[6]特点
 			(1)优点
 				[a]支持单机与集群模式，集群模式下支持主从模式，可用性高
 				[b]由于erlang的语言特性，使用RAM模式时性能很好
@@ -1513,6 +1574,20 @@
 				[b]消息堆积程度与性能呈反比，堆积数据量过大，会有明显的性能下降
 				[c]erlang语言难度较大，集群不支持动态扩展
 				[d]不支持事务消息，消息吞吐能力有限
+		[7]可靠性投递
+			(1)生产者到broker
+			
+			(2)broker到消费者
+
+			(3)通过定时任务实现
+			
+			(4)
+		[8]消息持久化
+		
+		[9]RabbitMQ集群搭建
+		
+		[10]RabbitMQ高级特性
+		
 	7、ZeroMQ
 
 三十四、SpringBoot
