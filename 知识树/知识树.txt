@@ -200,6 +200,7 @@
 			a、选择排序
 			b、冒泡排序
 			c、快速排序
+			d、希尔排序
 		[4]交集
 		[5]并集
 		[6]补集
@@ -1140,7 +1141,74 @@
 三十一、SPI、Dubbo
 
 三十二、Zookeeper
-
+	1、概要
+		Zookeeper是用于分布式应用程序的协调服务。它公开了一组简单的API，分布式应用程序可以基于这些API用于同步节点状态、配置信息、服务注册信息等。
+		其由JAVA编写，支持JAVA和C两种客户端语言
+	2、官网 https://zookeeper.apache.org/
+	3、下载 http://zookeeper.apache.org/releases.html#download
+		apache-zookeeper-x.x.x-bin.tar.gz 编译好的可执行文件
+		apache-zookeeper-x.x.x.tar.gz 源码包
+	4、安装
+		tar -zxvf apache-zookeeper-x.x.x-bin.tar.gz
+	5、启动
+		{zk_home}/bin/zkServer.sh
+	6、配置
+	
+	7、常用命令
+	
+	8、Node节点
+		[1]节点类型
+			(1)PERSISTENT
+				[a]持久节点(默认创建的节点)
+				[b]创建方式：create /xxx
+			(2)PERSISTENT_SEQUENTIAL
+				[a]持久序号节点
+				[b]创建时zookeeper会在路径上加上序号作为后缀，非常适合用于分布式锁、分布式选举等场景
+				[c]创建方式：create -s /xxx
+			(3)EPHEMERAL
+				[a]临时节点
+				[b]临时节点会在客户端回话断开后自动删除，适用于心跳，服务发现等场景
+				[c]创建方式：create -e /xxx
+			(4)EPHEMERAL_SEQUENTIAL
+				[a]临时序号节点
+				[b]与持久节点类似，不同在于临时序号节点会在客户端回话断开后自动删除
+				[e]创建方式：create -e -s /xxx
+		[2]节点监听(WATCH)
+			客户端添加 -w 参数可实时监听节点与子节点的变化，并且实时收到通知。非常适用保障分布式情况下的数据一至性
+			(1) ls -w path
+				监听子节点的增加和删除
+			(2) get -w path
+				监听子节点的数据变化
+			(3) stat -w path
+				监听节点属性的变化
+			(4) printwatches on|off
+				触发监听后，是否打印监听事件(默认on)
+		[3]节点属性(STAT)
+			(1)查看当前节点属性
+				stat /xxx
+			(2)创建节点的事物ID
+				cZxid=0x385
+			(3)创建时间
+				ctime=Tue Sep 24 17:26:28 CST 2019
+			(4)修改节点的事物ID（当前节点数据修改）
+				mZxid=0x385
+			(5)最后修改时间
+				mtime=Tue Sep 24 17:26:28 CST 2019
+			(6)字节点变更事物ID（子节点增加或删除）
+				pZxid=0x385
+			(7)当前znode节点的子节点的变更次数（子节点增加或删除）
+				cversion=0
+			(8)当前znode节点数据版本变更次数
+				dataVersion=0
+			(9)权限版本变更次数
+				aclVersion=0
+			(10)节点拥有者（0x0表示没有拥有者，即该节点为持久节点，否则为临时节点，值为节点拥有者的回话ID）
+				ephemeralOwner=0x0
+			(11)数据长度（单位字节）
+				dataLength=5
+			(12)子节点数量
+				numChildren=3
+		[4]权限设置(ACL)
 三十三、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
 	1、消息中间件
 		[1]作用:
