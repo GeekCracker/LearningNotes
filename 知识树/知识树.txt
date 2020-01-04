@@ -944,8 +944,8 @@
 十二、SpringMVC
 	
 十三、MyBatis、MyBatisPlus、TkMapper、Hibernate
-
-
+	1、MyBatis
+	2、MyBatisPlus
 十四、并发编程
 	1、冯诺依曼计算机模型
 	2、现代计算机硬件基本结构
@@ -1139,7 +1139,35 @@
 三十、Netty
 
 三十一、SPI、Dubbo
-
+	1、SPI
+	2、Dubbo
+		[1]配置文件
+			(1)
+			(2)spring boot
+				[a]dubbo.registry.protocol=zookeeper
+					注册中心协议，支持的注册中心有：multicast、zookeeper、redis
+				[b]dubbo.registry.address=127.0.0.1:2181
+					注册中心地址，多个用逗号隔开，默认采用轮训负载均衡方式访问
+				[c]dubbo.protocol.name=dubbo
+					dubbo协议名称
+				[d]dubbo.protocol.port=20880
+					dubbo服务端端口
+				[e]dubbo.protocol.serialization=fastjson
+					dubbo远程调用时的序列化、反序列化方式，默认为 hessian2
+					支持的序列化方式有：java、compactedjava、nativejava、fastjson、dubbo、fst、hessian2、kryo
+		[2]存在问题
+			(1)集成MybatisPlus时QueryWrapper参数传递时序列化方式
+				[a]支持的方式
+					(a)java
+					(b)compactedjava
+					(c)fastjson
+				[b]不支持的方式
+					https://ask.csdn.net/questions/759545
+					(a)hessian2(dubbo默认序列化方式)
+					(b)nativejava
+					(c)dubbo(直接启动不起来)
+					(d)fst
+					(e)kryo
 三十二、Zookeeper
 	1、概要
 		Zookeeper是用于分布式应用程序的协调服务。它公开了一组简单的API，分布式应用程序可以基于这些API用于同步节点状态、配置信息、服务注册信息等。
@@ -1209,6 +1237,45 @@
 			(12)子节点数量
 				numChildren=3
 		[4]权限设置(ACL)
+			ACL全称Access Control List（访问控制列表），用于控制资源的访问权限。Zookeeper使用ACL来控制对其znode的访问。
+			基于 scheme:id:permission 的方式进行权限控制。 scheme 表示授权模式、 id 表示模式对应值、 permission 表示具体的增删改权限位
+			
+			ACL权限对应于具体的节点，针对于具体的节点进行权限的设置
+			(1)scheme:认证模式
+				[a]world
+					开放模式，world表示全世界都可以访问（默认设置）
+					(a)设置权限
+						setAcl world:anyone:dcrwa
+				[b]ip
+					ip模式，限定客户端IP访问
+				[c]auth
+					用户密码认证模式，只有在会话中加了认证才可以访问
+					(a)设置权限
+						setAcl /xxx auth:用户名:密码:cdrwa
+				[d]digest
+					与auth类似，区别在于auth用明文密码，而digest用sha-1 + base64 加密后的密码。实际使用中digest更常用
+					(a)密钥生成
+						在Linux命名行输入
+						echo -n 用户名:密码 | openssl dgst -binary -sha1 | openssl base64
+						生成的密钥
+						u53OoA8hprX59uwFsvQBS3QuI00=
+					(b)设置权限
+						setAcl /xxx digest:用户名:密钥:cdrwa
+			(2)permission:权限位
+				[a]CREATE
+					可以创建子节点
+				[b]DELETE
+					可以删除子节点（仅下一级节点）
+				[c]READ
+					可以读取节点数据及显示子节点列表，不包括读取子节点数据
+				[d]WRITE
+					可以设置节点数据
+				[e]ADMIN
+					可以设置节点访问控制列表权限
+			(3)ACL相关命令
+				getAcl  :	getAcl /xxx				查看acl权限
+				setAcl	:	setAcl /xxx acl			设置acl权限
+				addauth :	addauth 用户名:密码		添加认证用户
 三十三、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
 	1、消息中间件
 		[1]作用:
