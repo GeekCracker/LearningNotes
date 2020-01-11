@@ -938,7 +938,25 @@
 			git commint -c 备注;将缓冲区的内容提交到本地的git仓库
 			git pull;拉取远程的仓库内容到本地仓库
 			git push;将本地仓库的内容推送到远程的仓库
-
+		[2]本地新建仓库与远程仓库关联
+			https://blog.csdn.net/u012145252/article/details/80628451
+			(1)git init
+				初始化本地Git仓库
+			(2)git remote add origin url
+				添加远程Git仓库
+			(3)git branch --set-upstream-to=origin/master
+				本地仓库与远程仓库进行关联
+			(4)上一步会报错，master分支不存在，这时需要在本地提交一次到本地仓库，master分支会自动创建
+			(5)git branch --set-upstream-to=origin/master
+				再次执行该命令，依然报错，提示远程master分支不存在
+				此时执行git fetch 或 git pull拉取远程分支
+				再执行该命令，本地master分支与远程master分支即可成功关联
+			(6)git push
+				此时执行git push，会报错，提示先git pull拉取
+			(7)git pull
+				执行git pull拉取会报该错误，拒绝合并不相关的历史记录
+				fatal: refusing to merge unrelated histories
+				执行 git pull --allow-unrelated-histories 允许合并，则执行成功，然后push 正常
 十一、Spring
 
 十二、SpringMVC
@@ -984,7 +1002,7 @@
 				当一个原子操作中有多个指令时，如果一个指令出现等待状态，这个等待状态指的是，等待其他线程释放变量锁，为拿到变量，会一直处于等待状态，
 				这时会出现指令重排，先运行下面的指令，以优化运行效率，会在java字节码文件执行器将文件编译成汇编指令时和CPU执行时进行指令的重排
 			(2)内存屏障
-				由于指令重排具有一定的危险性，造成错误的结果，所以有了内存屏障以禁止指令重排，内存屏障有多重实现方式，volatile是其中一种方式，
+				由于指令重排具有一定的危险性，造成错误的结果，所以有了内存屏障以禁止指令重排，内存屏障有多种实现方式，volatile是其中一种方式，
 				还可以手动加内存屏障，例如：Java的Unsafe魔术类中的fullFence()读写屏障、loadFence()读屏障、storeFence()写屏障方式加屏障，
 				还有其他方式，例如：CAS原子操作等
 				内存屏障的类型：
@@ -1138,7 +1156,50 @@
 		[9]Sharding-Sidecar
 三十、Netty
 
-三十一、SPI、Dubbo
+三十一、远程调用的方式RMI、WebService、Http、Hessian
+	1、RMI
+		[1]描述：
+			Java远程方法调用、使用原生二进制方式进行序列化
+		[2]优点：
+			(1)简单易用，SDK支持，提高开发效率
+			(2)支持服务发现
+		[3]缺点：
+			不支持跨语言，不支持负载均衡
+		[4]概念：
+			Java RMI，即远程方法调用(Remote Method Invocation)，一种用于实现远程过程调用(RPC)(Remote Procedure Call)的Java API，
+			能直接传输序列化后的Java对象和分布式垃圾收集。它的实现依赖于Java虚拟机(JVM)，因此它仅支持从一个JVM到另一个JVM的调用。即不支持跨语言
+		[5]基本使用
+			(1)注册中心
+				LocateRegistry.createRegistry(8080);
+			(2)服务端
+				UserService userService = new UserServiceImpl();
+				Naming.bind("rmi://localhost:8080/UserService", userService);
+			(3)客户端
+				UserService userService = (UserService) 
+				Naming.lookup("rmi://localhost:8080/UserService");
+				userService.getById(1);
+	2、WebService
+		[1]描述:
+			基于WSDL生成SOAP进行消息的传递，比较于早期的系统调用方案，支持跨语言
+		[2]优点：
+			SDK支持，跨语言
+		[3]缺点：
+			实现较重，发布繁琐		
+	3、Http
+		[1]描述：
+			采用http+json方式实现
+		[2]优点：
+			简单、轻量、跨语言
+		[3]缺点：
+			不支持SDK，没有相关的开发包，需自己手动实现
+	4、Hessian
+		[1]描述：
+			采用http+hessian序列化实现
+		[2]优点：
+			简单、轻量、SDK支持
+		[3]缺点：
+			不能跨语言
+三十二、SPI、Dubbo
 	1、SPI
 	2、Dubbo
 		[1]配置文件
@@ -1165,10 +1226,10 @@
 					https://ask.csdn.net/questions/759545
 					(a)hessian2(dubbo默认序列化方式)
 					(b)nativejava
-					(c)dubbo(直接启动不起来)
+					(c)dubbo(效果为直接启动不起来)
 					(d)fst
 					(e)kryo
-三十二、Zookeeper
+三十三、Zookeeper
 	1、概要
 		Zookeeper是用于分布式应用程序的协调服务。它公开了一组简单的API，分布式应用程序可以基于这些API用于同步节点状态、配置信息、服务注册信息等。
 		其由JAVA编写，支持JAVA和C两种客户端语言
@@ -1276,7 +1337,11 @@
 				getAcl  :	getAcl /xxx				查看acl权限
 				setAcl	:	setAcl /xxx acl			设置acl权限
 				addauth :	addauth 用户名:密码		添加认证用户
-三十三、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
+	9、Spring集成
+		
+	10、SpringBoot集成
+	
+三十四、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
 	1、消息中间件
 		[1]作用:
 			(1)异步处理
@@ -1725,44 +1790,44 @@
 		
 	7、ZeroMQ
 
-三十四、SpringBoot
+三十五、SpringBoot
 	
-三十五、SpringCloud
+三十六、SpringCloud
 
-三十六、Eureka
+三十七、Eureka
 
-三十七、Ribbon
+三十八、Ribbon
 
-三十八、Feign
+三十九、Feign
 
-三十九、Hystrix
+四十、Hystrix
 
-四十、Zuul
+四十一、Zuul
 
-四十一、Sleuth、Cat
+四十二、Sleuth、Cat
 
-四十二、Docker
+四十三、Docker
 
-四十三、Kubernetes
+四十四、Kubernetes
 
-四十四、人工智能
+四十五、人工智能
 	1、Python
 	2、神经网络
 	3、脑类计算
 	4、深度学习
 	
-四十五、区块链
+四十六、区块链
 	1、共识机制
 	2、工作量证明原理
 	3、挖矿算法
 	4、密码学
 	
-四十六、大数据
+四十七、大数据
 	1、Hadoop
 	2、Spark
 	3、数据挖掘
 	4、MapReduce
-四十七、物联网技术
+四十八、物联网技术
 	1、RFID射频识别技术
 	2、传感网
 	3、M2M系统框架
