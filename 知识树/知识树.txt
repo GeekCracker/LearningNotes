@@ -224,7 +224,7 @@
 				  运行带包的程序，需要使用类的全路径，就是带包的路径
 				  例如 : java  com.test.Test		
 			(6)JDK常用的包
-				   java.lang  : java 核心包。  用重要的Object类
+				   java.lang  : java 核心包。  有重要的Object类
 				   Java.awt : 包含了构成抽象窗口工具集的多个类。跟管理图形用户界面(GUI)
 				   Java.swing :完全Java版的图形用户界面(GUI)解决方案,提供很多组件
 				   Java.net: 包含网络相关的操作类。如URL ,Socket等
@@ -1203,7 +1203,7 @@
 	1、SPI
 	2、Dubbo
 		[1]配置文件
-			(1)
+			(1)spring
 			(2)spring boot
 				[a]dubbo.registry.protocol=zookeeper
 					注册中心协议，支持的注册中心有：multicast、zookeeper、redis
@@ -1217,7 +1217,9 @@
 					dubbo远程调用时的序列化、反序列化方式，默认为 hessian2
 					支持的序列化方式有：java、compactedjava、nativejava、fastjson、dubbo、fst、hessian2、kryo
 		[2]存在问题
-			(1)集成MybatisPlus时QueryWrapper参数传递时序列化方式
+			(1)集成MybatisPlus时QueryWrapper参数传递时序列化方式，
+				由于QueryWrapper对象比较重，在作为远程调用的参数时，会占用更多的流量，所以官网不建议这么做。
+				参考：https://mp.baomidou.com/guide/wrapper.html#abstractwrapper
 				[a]支持的方式
 					(a)java
 					(b)compactedjava
@@ -1791,20 +1793,46 @@
 	7、ZeroMQ
 
 三十五、SpringBoot
-	
-三十六、SpringCloud
+	1、简介
+		用来快速开发微服务的web框架(脚手架)
 
-三十七、Eureka
+三十六、Spring Cloud
+	1、简介
+		微服务架构的一套工具集
+三十七、Spring Cloud Netflix
+	1、简介
+		用来开发微服务的工具集，是Srping Cloud的一个子项目
+	2、包含组件
+		[1]Eureka
+			注册中心
+		[2]Ribbon
+			客户端的负载均衡
+		[3]Feign
+			服务端的负载均衡
+		[4]Hystrix
+			断路器
+		[5]Zuul
+			路由器(网关)
+三十八、Spring Cloud Alibaba
+	1、简介
+		阿里开源的符合中国企业的一套微服务架构解决方案，是Spring Cloud的一个子项目
+	2、包含组件	
+		[1]Nacos
+			注册中心
+			(1)Nacos Server
+			(2)Nacos Client
+		[2]Spring Cloud Dubbo
+			远程调用、负载均衡
+		[3]Sentinel
+			断路器
 
-三十八、Ribbon
+三十九、Spring Cloud GateWay
 
-三十九、Feign
+四十、Spring Cloud OpenFeign
 
-四十、Hystrix
+四十一、Spring Cloud Sleuth、Cat
 
-四十一、Zuul
-
-四十二、Sleuth、Cat
+四十二、Spring Cloud Stream
 
 四十三、Docker
 
