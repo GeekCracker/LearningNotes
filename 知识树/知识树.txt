@@ -938,7 +938,7 @@
 			git commint -c 备注;将缓冲区的内容提交到本地的git仓库
 			git pull;拉取远程的仓库内容到本地仓库
 			git push;将本地仓库的内容推送到远程的仓库
-		[2]本地新建仓库与远程仓库关联
+		[2]本地新建仓库与远程仓库关联(远程仓库已存在)
 			https://blog.csdn.net/u012145252/article/details/80628451
 			(1)git init
 				初始化本地Git仓库
@@ -957,6 +957,13 @@
 				执行git pull拉取会报该错误，拒绝合并不相关的历史记录
 				fatal: refusing to merge unrelated histories
 				执行 git pull --allow-unrelated-histories 允许合并，则执行成功，然后push 正常
+		[3]本地添加远程分支
+			(1)添加远程分支
+				git remote add 分支名称 url
+			(2)推送分支到远程
+				git push origin 分支名称
+			(3)将远程分支与本地分支关联
+				git branch --set-upstream-to=origin/分支名称 本地分支名称
 十一、Spring
 
 十二、SpringMVC
@@ -1239,7 +1246,7 @@
 	3、下载 http://zookeeper.apache.org/releases.html#download
 		apache-zookeeper-x.x.x-bin.tar.gz 编译好的可执行文件
 		apache-zookeeper-x.x.x.tar.gz 源码包
-	4、安装
+	4、安装（解压即可）
 		tar -zxvf apache-zookeeper-x.x.x-bin.tar.gz
 	5、启动
 		{zk_home}/bin/zkServer.sh
@@ -1343,7 +1350,7 @@
 		
 	10、SpringBoot集成
 	
-三十四、JMS、ActiveMQ、Kafka、RocketMQ、RabbitMQ、ZeroMQ
+三十四、JMS、ActiveMQ、Kafka、MetaQ、RocketMQ、RabbitMQ、ZeroMQ
 	1、消息中间件
 		[1]作用:
 			(1)异步处理
@@ -1495,10 +1502,39 @@
 				[b]无分片功能
 					无消息分片功能，不支持集群服务，单机环境下不能处理大量的请求，需手动分片
 	4、Kafka
-	
-	5、RocketMQ
-		[1]简介
+		[1]官网
+			中文版：http://kafka.apachecn.org/
+			英文版：http://kafka.apache.org/
+		[2]简介
+			Kafka是一种高吞吐量的分布式发布订阅消息系统，使用Scala编写。
+		[3]下载安装
+			下载kafka_2.12-2.3.0.tgz文件(Scala版本-Kafka版本)
+			tar -zxvf kafka_2.12-2.3.0.tgz 解压即可
+		[4]入门配置
+			(1)https://blog.csdn.net/LeonTom/article/details/82659228?utm_source=blogxgwz6
+			(2)第一步：修改/etc/hosts文件
+					添加 内网IP HostName
+			   第二步：修改kafka配置文件server.properties
+					listeners=PLAINTEXT://0.0.0.0:9092
+					advertised.listeners=PLAINTEXT://外网IP:9092
+					advertised.host.name=HostName
+		[5]详细配置
+			(1)Broker配置
 			
+			(2)Producer配置
+			
+			(3)Consumer配置
+			
+			(4)Topic配置
+		[6]启动Broker
+		[7]客户端
+			
+	5、MetaQ
+		[1]简介
+			仿照Kafka实现的
+	6、RocketMQ
+		[1]简介
+			前身是MetaQ
 		[2]安装
 		[3]基本使用
 		[4]消息持久化
@@ -1794,11 +1830,18 @@
 
 三十五、SpringBoot
 	1、简介
-		用来快速开发微服务的web框架(脚手架)
-
+		[1]Spring Boot是由Pivotal团队提供的全新框架，其设计目的是用来简化新Spring应用的初始搭建以及开发过程。
+			该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。通过这种方式，
+			Spring Boot致力于在蓬勃发展的快速应用开发领域(rapid application development)成为领导者。(百度百科)
+		[2]用来快速开发微服务的web框架(脚手架)
 三十六、Spring Cloud
 	1、简介
-		微服务架构的一套工具集
+		[1]Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，
+			如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格
+			做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将各家公司开发的比较成熟、经得起实际考验的
+			服务框架组合起来，通过Spring Boot风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套
+			简单易懂、易部署和易维护的分布式系统开发工具包。(百度百科)
+		[2]微服务架构的一套工具集
 三十七、Spring Cloud Netflix
 	1、简介
 		用来开发微服务的工具集，是Srping Cloud的一个子项目
@@ -1825,6 +1868,8 @@
 			远程调用、负载均衡
 		[3]Sentinel
 			断路器
+		[4]Seata
+			分布式事务
 
 三十九、Spring Cloud GateWay
 
